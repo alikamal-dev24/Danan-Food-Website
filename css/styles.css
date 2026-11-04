@@ -1141,6 +1141,7 @@ body.is-locked { overflow: hidden; }
 /* ---------- 25. Reveal ---------- */
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); will-change: opacity, transform; }
 .reveal.is-visible { opacity: 1; transform: none; }
+.has-gsap .reveal { transition: none; }
 
 /* ---------- 26. Responsive ---------- */
 @media (max-width: 1080px) {
