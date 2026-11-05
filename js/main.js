@@ -111,4 +111,31 @@
       form.reset();
     });
   });
+
+  /* ---------- Page loader ---------- */
+  var loader = document.getElementById("pageLoader");
+  if (loader) {
+    var startedAt = Date.now();
+    var dismiss = function () {
+      loader.classList.add("is-done");
+      loader.setAttribute("aria-hidden", "true");
+      document.documentElement.classList.add("is-loaded");
+      document.dispatchEvent(new Event("danan:ready"));
+    };
+    var finish = function () {
+      /* long enough to read as a deliberate beat, short enough to never feel slow */
+      setTimeout(dismiss, Math.max(0, 620 - (Date.now() - startedAt)));
+    };
+    if (document.readyState === "complete") finish();
+    else window.addEventListener("load", finish);
+  }
+
+  /* ---------- Mark the current page in the nav ---------- */
+  var here = (window.location.pathname.split("/").pop() || "index.html");
+  if (here === "") here = "index.html";
+  document.querySelectorAll(".nav__link, .mobile-nav__link").forEach(function (link) {
+    var href = link.getAttribute("href");
+    if (href === here) link.setAttribute("aria-current", "page");
+  });
+
 })();

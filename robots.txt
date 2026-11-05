@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://alikamal-dev24.github.io/Danan-Food-Website/sitemap.xml
