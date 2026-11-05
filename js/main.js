@@ -92,23 +92,62 @@
   var year = document.getElementById("year");
   if (year) year.textContent = new Date().getFullYear();
 
-  /* ---------- Enquiry forms (no backend: composes an email) ---------- */
+  /* ---------- Enquiry forms (delivered to the sales inbox) ---------- */
   Array.prototype.forEach.call(document.querySelectorAll("[data-inquiry]"), function (form) {
+    var status = form.querySelector(".form__status");
+    var button = form.querySelector('button[type="submit"]');
+    var buttonHTML = button ? button.innerHTML : "";
+    var keyField = form.querySelector('input[name="access_key"]');
+    var endpoint = form.getAttribute("action") || "";
+
+    var say = function (message, state) {
+      if (!status) return;
+      status.className = "form__status" + (state ? " is-" + state : "");
+      status.innerHTML = message;
+    };
+
+    var offline = 'This form is not connected to an inbox yet. Please email <a href="mailto:info@dananfoods.com">info@dananfoods.com</a> or WhatsApp <a href="https://wa.me/923700829927" target="_blank" rel="noopener">+92 370 0829927</a>.';
+
     form.addEventListener("submit", function (e) {
+      if (!endpoint || !window.fetch || !window.FormData) return;
       e.preventDefault();
-      var status = form.querySelector(".form__status");
-      var data = new FormData(form);
-      var lines = [];
-      data.forEach(function (value, key) {
-        if (key === "bot-field") return;
-        lines.push(key.replace(/([A-Z])/g, " $1").replace(/^./, function (c) { return c.toUpperCase(); }) + ": " + value);
-      });
-      var subject = encodeURIComponent("Website enquiry — " + (data.get("name") || "Danan Foods"));
-      var body = encodeURIComponent(lines.join("\n"));
-      if (status) status.textContent = "Opening your email app…";
-      window.location.href = "mailto:info@dananfoods.com?subject=" + subject + "&body=" + body;
-      if (status) status.textContent = "If nothing opened, email info@dananfoods.com or call +92 370 0829927.";
-      form.reset();
+      if (form.classList.contains("is-sending")) return;
+
+      /* the site owner pastes their Web3Forms key into the form markup */
+      if (keyField && keyField.value.indexOf("REPLACE-WITH") === 0) {
+        say(offline, "error");
+        return;
+      }
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+
+      var body = new FormData(form);
+
+      form.classList.add("is-sending");
+      if (button) button.innerHTML = "Sending…";
+      say("Sending your message…");
+
+      fetch(endpoint, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: body
+      })
+        .then(function (response) {
+          return response.json().catch(function () { return {}; }).then(function (result) {
+            if (!response.ok || result.success === false) throw new Error(result.message || "send failed");
+            return result;
+          });
+        })
+        .then(function () {
+          form.reset();
+          say("Thank you — your message is on its way to our sales office. We reply on working days, usually within 24 hours.", "ok");
+        })
+        .catch(function () {
+          say('That did not send. Please email <a href="mailto:info@dananfoods.com">info@dananfoods.com</a> or WhatsApp <a href="https://wa.me/923700829927" target="_blank" rel="noopener">+92 370 0829927</a> and we will pick it up from there.', "error");
+        })
+        .then(function () {
+          form.classList.remove("is-sending");
+          if (button) button.innerHTML = buttonHTML;
+        });
     });
   });
 

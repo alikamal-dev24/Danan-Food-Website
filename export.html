@@ -281,7 +281,13 @@
         </dl>
       </div>
 
-      <form class="form" data-inquiry>
+      <form class="form" data-inquiry action="https://api.web3forms.com/submit" method="POST">
+        <!-- Paste your Web3Forms access key below (web3forms.com → enter info@dananfoods.com → key arrives by email) -->
+        <input type="hidden" name="access_key" value="REPLACE-WITH-YOUR-WEB3FORMS-ACCESS-KEY">
+        <input type="hidden" name="subject" value="Export enquiry — Danan Foods">
+        <input type="hidden" name="from_name" value="Danan Foods website">
+        <input type="hidden" name="redirect" value="https://alikamal-dev24.github.io/Danan-Food-Website/thanks.html">
+        <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div class="form__row">
           <div class="field">
             <label for="ex-name">Your name</label>
@@ -321,7 +327,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </button>
         <p class="form__status" role="status" aria-live="polite"></p>
-        <p class="form__note">This form opens your email app with the details filled in. Prefer to talk? Call or WhatsApp <a href="tel:+923700829927" style="text-decoration:underline">+92 370 0829927</a>.</p>
+        <p class="form__note">Enquiries come straight to our export desk at info@dananfoods.com. Prefer to talk? Call or WhatsApp <a href="tel:+923700829927" style="text-decoration:underline">+92 370 0829927</a>.</p>
       </form>
     </div>
   </section>
