@@ -1,6 +1,0 @@
-# Normalise line endings so the repo does not churn on every upload
-* text=auto eol=lf
-*.jpg binary
-*.jpeg binary
-*.png binary
-*.mp4 binary
